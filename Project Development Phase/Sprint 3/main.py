@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 #connecting with ibm db2
 app.secret_key = "nutritionassistantapplication"
-conn = ibm_db.connect("DRIVER={IBM DB2 ODBC DRIVER}; DATABASE=bludb; HOSTNAME=98538591-7217-4024-b027-8baa776ffad1.c3n41cmd0nqnrk39u98g.databases.appdomain.cloud; PORT=30875; SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt; UID=jqb73841; PWD=E4pdcHrukFsv9qz2;",'','')
+conn = ibm_db.connect("DRIVER={IBM DB2 ODBC DRIVER}; DATABASE=bludb; HOSTNAME=xxxx; PORT=xxxx; SECURITY=SSL;SSLServerCertificate=DigiCertGlobalRootCA.crt; UID=xxx; PWD=xxx;",'','')
 
 # Defining upload folder path
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
@@ -38,7 +38,7 @@ def send_confirmation_mail(user, mail):
         html_content = f"<strong>Congrats {user}!</strong><br>Account Created with username {mail}"
     )
 
-    SENDGRID_API_KEY='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'
+    SENDGRID_API_KEY='xxxx'
     try:
         sg = SendGridAPIClient(SENDGRID_API_KEY)
         response = sg.send(message)
@@ -104,13 +104,13 @@ def register():
     
     return render_template("register.html", msg=msg)
 
-@app.route("/profile")
-def profile():
-    if "user" not in session:
+"""@app.route("/home/<msg>")
+def home(msg, account):
+    if "user" in session:
+        return render_template("home.html", msg=msg, account=account)
+    else:
         return redirect(url_for("login", msg="Kindly login"))
-
-    return render_template("profile.html", msg='', name=session['name'], email=session['user'])
-
+"""
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -139,7 +139,7 @@ def login():
             return render_template("profile.html", msg=msg, name=name, email=email)
 
         elif "user" in session:
-            return redirect(url_for('profile'))
+            return render_template("profile.html", msg=msg, name=name, email=email)
 
         else:
             msg = "Incorrect password or email address"
@@ -166,7 +166,7 @@ def delete(email):
     ibm_db.execute(stmt)
     return render_template("register.html", msg="Account deleted successfully")
 
-@app.route('/uploadFile',  methods=("POST", "GET"))
+@app.route('/newscan',  methods=("POST", "GET"))
 def uploadFile():
 
     if request.method == 'POST':
@@ -178,41 +178,18 @@ def uploadFile():
         path = os.path.join(app.config['UPLOAD_FOLDER'], img_filename)
         uploaded_img.save(path)
         food = predictConcept(path)
-        data = getNutritions(food)
         # Storing uploaded file path in flask session
         session['uploaded_img_file_path'] = os.path.join(app.config['UPLOAD_FOLDER'], img_filename)
         print("File name: ",img_filename)
-        fat = data['fat']
-        carbs = data['carbs']
-        protein = data['protein']
 
-        fat_value = str(fat['value'])+" "+fat['unit']
-        carb_value = str(carbs['value'])+" "+carbs['unit']
-        protein_value = str(protein['value'])+" "+protein['unit']
-
-        fat_cal = fat['value']*9
-        carbs_cal = carbs['value']*4
-        protein_cal = protein['value']*4
-        total = str(fat_cal+carbs_cal+protein_cal)+"Cals"
-
-        sql = "INSERT INTO FOODDATA VALUES(?,?,?,?,?,?,?)"
-        stmt = ibm_db.prepare(conn, sql)
-        ibm_db.bind_param(stmt, 1, )
-        ibm_db.bind_param(stmt, 2, email)
-        ibm_db.bind_param(stmt, 3, password)
-        ibm_db.execute(stmt)
-    else:
-        if "user" in session:
-            return render_template("profile.html", msg='', name=session['name'], email=session['user'])
-
-    return render_template("nutrition_table.html", food=food, fat=fat_value, carbs=carb_value, protein=protein_value, fat_cal= fat_cal, protein_cal=protein_cal, carbs_cal=carbs_cal, total_calories=total)
+    return f"<h3>File uploaded successfully<br>Given food item is {food}</h3>"
 
 
 #Predict the food item in the given using the image recognition in clarifai model
 def predictConcept(path):
     USER_ID = 'emayakeerthi'
     # Your PAT (Personal Access Token) can be found in the portal under Authentification
-    PAT = 'df7a3eeeaf2243a29877f79e932b917a'
+    PAT = 'xxxx'
     APP_ID = 'Nutrion'
     # Change these to whatever model and image input you want to use
     MODEL_ID = 'general-image-recognition'
@@ -254,25 +231,28 @@ def predictConcept(path):
     # Since we have one input, one output will exist here
     output = post_model_outputs_response.outputs[0]
 
+    print("Predicted concepts:")
     for concept in output.data.concepts:
+        print("%s %d" % (concept.name, concept.value))
+        getNutritions(concept.name)
         return concept.name
         
 
     
 #search the nutrition in given food using FatSecret API
-api = sp.API("f55a289413e74ea7a14ec7f77926b24b")
+api = sp.API("xxx")
 def getNutritions(food_item):
     response = api.guess_nutrition_by_dish_name(food_item)
     data = response.json()
-    return data
-    
+    fat = data['fat']
+    carbs = data['carbs']
+    protein = data['protein']
 
-@app.route('/nutrition')
-def nutrition():
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    print("Fat: ",str(fat['value'])+fat['unit'])
+    print("Carbs: ",str(carbs['value'])+carbs['unit'])
+    print("Protein: ",str(protein['value'])+protein['unit'])
 
-    return render_template('nutrition.html')
-        
+
+
 if __name__=="__main__":
     app.run(debug=True)
