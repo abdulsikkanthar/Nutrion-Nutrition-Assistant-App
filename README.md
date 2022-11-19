@@ -13,7 +13,7 @@ This project aims at building a web App that automatically estimates food attrib
 ### Team Members
 1. Abdul Sikkanthar S (Front-End Developer)
 2. Al Hameed Farvaz A (Tester)
-3. Emayakeerthi N (Front-End Developer
+3. Emayakeerthi N (Back-End Developer)
 4. Rithik S (Front-End Developer)
 
 #### Project Demo Video - https://www.shorturl.at/fhqx3
