@@ -1,0 +1,86 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--bootstrap-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <!--css-->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://kit.fontawesome.com/4a14f9e389.js" crossorigin="anonymous"></script>
+  <title>Nutrion: Nutrition Assistant</title>
+  <style>
+    table,th,td{
+      border:1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <!--#e3f2fd-->
+  <nav class="navbar" style="background-color: #fff;">
+    <a class="navbar-brand" href="{{url_for('index')}}">Nutrion: Nutrition Assistant</a>
+    <div class="nav-right">
+      <a href="{{url_for('nutrition')}}" class="button">Food Analyzer</a>
+      <a href="{{url_for('profile')}}" class="button">View Profile</a>
+      <a href="{{url_for('logout')}}" id="register" class="btn btn-outline-danger">Log out</a>
+    </div>
+  </nav>
+
+    <div class="container-content">
+        {% block content%}
+        <center>
+            <h1 style="color: green;; text-align: center">History</h1><br>
+            <h3 style="text-align: center;">
+              <table class="table" style="width:100%">
+                <tr class="table">
+                  <th><center>Time</center></th>
+                  <th><center>Food Items</center></th>
+                  <th><center>Fat</center></th>
+                  <th><center>Protein</center></th>
+                  <th><center>Carbs</center></th>
+                  <th><center>Calories</center></th>
+                </tr>
+                {% for row in history %}
+                  <tr class="table-primary">
+                    {% for key, value in row.items() %}
+                      {% if key!="EMAIL" %}
+                        <td><center>{{value}}</center></td>
+                      {%endif%}
+                    {%endfor%}
+                  </tr>
+                {%endfor%}
+              </table></h3>
+             </center>
+        {%endblock%}
+        
+    </div>
+    
+    <br><br>
+    <footer>
+      <div class="footer">
+          <div class="footer-text">
+              <h4>Design and Developed by <a href="https://www.linkedin.com/in/emayakeerthi" target="_blank" rel="noopener noreferrer">AAER</a></h4>
+          </div>
+          <div class="outer-footer">
+               <div class="social-media">
+                   <ul>
+                       <li class="sm-content follow-me">Follow us on </li>
+                       <li class="sm-content"><a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a></li>
+                       <li class="sm-content"><a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a></li>
+                       <li class="sm-content"><a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a></li>
+                       <li class="sm-content"><a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a></li>
+                   </ul>
+               </div>
+               <div class="contact">
+                    <ul>
+                        <li class="sm-content reach-me">Reach us </li>
+                        <li class="sm-content"><a href="mailto:nutritionassistantapplication@gmail.com" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope"></i>Email</a></li>
+                        <li class="sm-content"><a href="tel:+918428366507" target="_blank" rel="noopener noreferrer"><i class="fas fa-mobile-alt"></i>Phone</a></li>
+                    </ul>
+               </div>
+          </div>
+      </div>
+    </footer>
+
+    </body>
+</html>
