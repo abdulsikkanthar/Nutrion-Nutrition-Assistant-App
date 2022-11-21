@@ -16,4 +16,4 @@ This project aims at building a web App that automatically estimates food attrib
 3. Emayakeerthi N (Back-End Developer)
 4. Rithik S (Front-End Developer)
 
-#### Project Demo Video - https://www.shorturl.at/fhqx3
+#### Project Demo Video - https://youtu.be/BT4V53xoNUY
